@@ -1,0 +1,103 @@
+export ZSH="/home/saedx1/.oh-my-zsh"
+
+### History Management ###
+export SAVEHIST=1000000000
+export HISTFILESIZE=1000000000
+export HISTSIZE=1000000000
+setopt INC_APPEND_HISTORY
+export HISTTIMEFORMAT="[%F %T] "
+setopt EXTENDED_HISTORY
+export AWS_PAGER=
+
+### Theme ###
+ZSH_THEME="cloud"
+
+
+### Plugins ###
+plugins=(git)
+source $ZSH/oh-my-zsh.sh
+
+### Aliases ###
+alias memused="free -h | awk '/^Mem:/ {print \$3 \"/\" \$2}'"
+alias cpuused="ps aux | awk '{sum+=\$3} END {print sum\"%\"}'"
+alias topcpu='ps axch -o pid,cmd:15,%cpu --sort=-%cpu | head'
+alias topmem='ps axch -o pid,cmd:15,%mem --sort=-%mem | head'
+
+alias ca='conda activate'
+alias cacl='ca cst-labs'
+alias camk='ca maktabti'
+
+alias nrs='npm run start'
+
+alias tf='terraform'
+alias tfa='tf apply -auto-approve'
+alias tfd='tf destroy -auto-approve'
+alias tfv='tf validate'
+alias tfr='tf refresh'
+
+alias gsu='git status -uno'
+alias gco='git commit'
+alias gpu='git push'
+alias ga='git add'
+alias gffp='git flow feature publish'
+alias gffs='git flow feature start'
+alias gfff='git flow feature finish'
+alias gpl='git pull'
+
+### Conda Initalization ###
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/saedx1/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/saedx1/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/saedx1/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/saedx1/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+### Env Vars ###
+export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:$HOME/go/bin
+export PATH=$PATH:/opt/oracle/product/18c/dbhomeXE/bin
+export ORACLE_HOME=/opt/oracle/product/18c/dbhomeXE
+export ORACLE_SID=mydb
+export PATH=$PATH:$HOME/.linuxbrew/bin
+export PATH=$PATH:$HOME/.dotnet
+export PATH=$PATH:$HOME/.local/bin
+export DOTNET_ROOT=$HOME/.dotnet
+export GOPATH=$HOME/go
+export GOPRIVATE=dev.azure.com
+
+
+### Helper Functions ###
+func restart_adb() {
+    sudo udevadm control --reload-rules
+    sudo killall udevd
+    adb kill-server
+}
+
+func sync_time() {
+    sudo ntpd -gq
+}
+
+func delete_tag() {
+    git tag -d $1
+    git push --delete origin $1
+}
+
+func restart_card() {
+    sudo ifconfig $1 0.0.0.0
+    sudo sv restart NetworkManager
+}
+
+export PATH=$PATH:/usr/bin
+
+
+## Completion ##
+source '/usr/lib/azure-cli/az.completion'
+complete -C 'aws_completer' aws
