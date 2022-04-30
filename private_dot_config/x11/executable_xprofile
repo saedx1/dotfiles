@@ -1,0 +1,33 @@
+#!/bin/sh
+
+# This file runs when a DM logs you into a graphical session.
+# If you use startx/xinit like a Chad, this file will also be sourced.
+
+xset r rate 300 50 &	# Speed xrate up
+
+activate_status_bar &
+
+xrandr --output DP-0 --auto --right-of HDMI-0 --mode 1920x1080
+
+sudo cupsd -f &
+
+dunst -font "Calibri 18" &
+
+picom --corner-radius 15  --opacity-rule '80:class_g = "st-256color"' &
+# xcompmgr -c -C -t-5 -l-5 -r4.2 -o.55 &
+
+feh --bg-scale ~/backgrounds/bg3.jpg &
+
+numlockx &
+
+sudo ntpd -gq &
+
+sudo smbd -F -S -d3 &
+
+echo 2 | sudo tee /sys/module/hid_apple/parameters/fnmode
+
+pidof -s runit &&
+	! pidof -s pulseaudio >/dev/null 2>&1 &&
+	setsid -f pulseaudio --start --exit-idle-time=-1 >/dev/null 2>&1
+
+export _JAVA_AWT_WM_NONREPARENTING=1
